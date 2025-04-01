@@ -4,20 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Web Spreadsheet</title>
+    <!-- Link to external stylesheet -->
     <link rel="stylesheet" href="./css/main.css"/>
+    <!-- Load AngularJS from a CDN (or a local file if preferred) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="TableController">
     <h1>My Web Spreadsheet</h1>
   
-    <!-- 
-      You can add a container or a div where your spreadsheet grid will live. 
-      For example: 
-    -->
-    <div id="spreadsheet-container">
-      <!-- Future: Rows, columns, cells, etc. -->
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th ng-repeat="col in columns track by $index">
+            {{col}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="rowNum in rows track by $index">
+          <th>
+            {{rowNum}}
+          </th>
+          <td ng-repeat="col in columns track by $index">
+            {{col + rowNum}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   
     <!-- Link to your main JS file at the bottom of body for best performance -->
-    <script src="./js/main.js"></script>
+    <script src="./js/app.js"></script>
 </body>
 </html>
