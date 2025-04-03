@@ -26,8 +26,20 @@
           <th>
             {{rowNum}}
           </th>
-          <td ng-repeat="col in columns track by $index">
-            {{col + rowNum}}
+          <td 
+          ng-repeat="col in columns track by $index"
+          ng-init="cell = cells[$parent.$index][$index]"
+          data-coord="{{col + rowNum}}"   
+          contenteditable="true" 
+          ng-blur="onCellBlur($event, $parent.$index, $index)"
+          ng-class="{
+            'text-cell': !cell.isNumeric, 
+            'number-cell': cell.isNumeric,
+            'calculated-cell': cell.isCalculated,
+          }"
+          ng-keydown="onCellKeyDown($event)"   
+          ng-focus="onCellFocus($event, $parent.$index, $index)"     
+          >
           </td>
         </tr>
       </tbody>

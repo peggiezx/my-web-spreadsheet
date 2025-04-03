@@ -6,17 +6,26 @@ body {
   }
   
 table {
+  table-layout: fixed;
   border-collapse: collapse;
   margin: 20px auto;
-  width: 60%;
+  width: 80%;
   font-family: Arial, sans-serif;
+}
+
+tbody th {
+  background-color: #eee;
+  width: 50px;
+  text-align: center;
 }
 
 th, td {
   border: 1px solid #333;
   padding: 8px;
   text-align: center;
-  min-width: 50px;
+  width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 thead th {
@@ -28,4 +37,16 @@ h1 {
   text-align: center;
   margin-top: 20px;
   font-family: Arial, sans-serif;
+}
+
+.text-cell {
+  text-align: left;
+}
+
+.number-cell {
+  text-align: right;
+}
+
+.calculated-cell {
+  background-color: #e8f4f8;
 }
