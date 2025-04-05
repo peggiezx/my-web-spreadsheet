@@ -9,9 +9,7 @@
     <!-- Load AngularJS from a CDN (or a local file if preferred) -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 </head>
-<body ng-app="myApp" ng-controller="TableController">
-    <h1>My Web Spreadsheet</h1>
-  
+<body ng-app="myApp" ng-controller="TableController">  
     <table>
       <colgroup>
         <col style="width: 20px;"> <!-- Row label column -->
@@ -20,7 +18,7 @@
       <thead>
         <tr>
           <th>
-              <button ng-click="resetSpreadsheet()">🔄 </button>
+              <button ng-click="resetSpreadsheet()">🔄</button>
           </th>
           <th ng-repeat="col in columns track by $index">
             {{col}}
