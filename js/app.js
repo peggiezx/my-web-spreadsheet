@@ -55,9 +55,43 @@ app.controller('TableController', ['$scope', function($scope) {
   }
 
   $scope.onCellKeyDown = function($event) {
-    if ($event.key === 'Enter') {
+    const key = $event.key;
+
+    const currentCell = $event.target;
+    const coord = currentCell.getAttribute("data-coord");
+    const colLetter = coord.match(/[A-Z]+/)[0]; // match capital letters (col part)
+    const rowNum = parseInt(coord.match(/\d+/)[0]);
+
+    const colIndex = $scope.columns.indexOf(colLetter);
+    const rowIndex = rowNum - 1;
+
+    let targetRow = rowIndex;
+    let targetCol = colIndex;
+
+    if (key === "Enter") {
       $event.preventDefault();
-      $event.target.blur();
+      const nextRow = Math.min(rowIndex + 1, $scope.rows.length - 1);
+      const nextCoord = $scope.columns[colIndex] + (nextRow + 1);
+      const nextCell = document.querySelector(`[data-coord="${nextCoord}"]`);
+      if (nextCell) {
+        nextCell.focus();
+      }
+      return;
+    }
+
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
+      $event.preventDefault();
+   
+      if (key === "ArrowUp") targetRow = Math.max(0, rowIndex - 1);
+      if (key === "ArrowDown") targetRow = Math.min($scope.rows.length - 1, rowIndex + 1);
+      if (key === "ArrowLeft") targetCol = Math.max(0, colIndex  - 1);
+      if (key === "ArrowRight") targetCol = Math.min($scope.columns.length - 1, colIndex + 1);
+
+      const nextCoord = $scope.columns[targetCol] + (targetRow + 1);
+      const nextCell = document.querySelector(`[data-coord="${nextCoord}"]`);
+      if (nextCell) {
+        nextCell.focus();
+      }
     }
   }
 
@@ -66,6 +100,27 @@ app.controller('TableController', ['$scope', function($scope) {
 
     if(cell.isCalculated) {
       $event.target.innerText = '='+cell.formula;
+    }
+  }
+
+  $scope.resetSpreadsheet = function() {
+    for (let r = 0; r < $scope.cells.length; r++) {
+      for (let c = 0; c < $scope.cells[r].length; c++) {
+        const cell = $scope.cells[r][c];
+        cell.content = '';
+        cell.rawInput = '';
+        cell.displayValue = '';
+        cell.formula = 'null';
+        cell.references = [];
+        cell.isNumeric = false;
+        cell.isCalculated = false;
+
+        const coord = cell.coord;
+        const el = document.querySelector(`[data-coord="${coord}"]`);
+        if (el) {
+          el.innerText = '';
+        }
+      }
     }
   }
 

@@ -13,9 +13,15 @@
     <h1>My Web Spreadsheet</h1>
   
     <table>
+      <colgroup>
+        <col style="width: 20px;"> <!-- Row label column -->
+        <col ng-repeat="col in columns" style="width: 40px;" >
+      </colgroup>
       <thead>
         <tr>
-          <th></th>
+          <th>
+              <button ng-click="resetSpreadsheet()">🔄 </button>
+          </th>
           <th ng-repeat="col in columns track by $index">
             {{col}}
           </th>
@@ -26,7 +32,8 @@
           <th>
             {{rowNum}}
           </th>
-          <td 
+          <td
+          tabindex="0" 
           ng-repeat="col in columns track by $index"
           ng-init="cell = cells[$parent.$index][$index]"
           data-coord="{{col + rowNum}}"   
@@ -39,7 +46,7 @@
           }"
           ng-keydown="onCellKeyDown($event)"   
           ng-focus="onCellFocus($event, $parent.$index, $index)"     
-          >
+          >  
           </td>
         </tr>
       </tbody>

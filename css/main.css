@@ -4,7 +4,8 @@ body {
     margin: 0;
     padding: 0;
   }
-  
+
+/* ===== Main Table Styling ===== */
 table {
   table-layout: fixed;
   border-collapse: collapse;
@@ -13,24 +14,26 @@ table {
   font-family: Arial, sans-serif;
 }
 
-tbody th {
-  background-color: #eee;
-  width: 50px;
-  text-align: center;
-}
-
+/* ===== Shared Cell Styling: applies to all header and data cells ===== */
 th, td {
   border: 1px solid #333;
-  padding: 8px;
+  padding: 2px 6px;
   text-align: center;
-  width: 80px;
+  height: 20px;
   white-space: nowrap;
   overflow: hidden;
 }
 
+/* ===== Column Headers (A, B, C...) ===== */
 thead th {
   background-color: #f2f2f2;
   font-weight: bold;
+}
+
+/* ===== Row Headers (1, 2, 3...) ===== */
+tbody th {
+  background-color: #eee;
+  text-align: center;
 }
 
 h1 {
@@ -39,6 +42,7 @@ h1 {
   font-family: Arial, sans-serif;
 }
 
+/* ===== Spreadsheet Cell Types ===== */
 .text-cell {
   text-align: left;
 }
@@ -49,4 +53,12 @@ h1 {
 
 .calculated-cell {
   background-color: #e8f4f8;
+}
+
+th button {
+  border: none;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 0px;
+  cursor: pointer;
 }
