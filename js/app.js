@@ -1,18 +1,19 @@
-// Create an AngularJS module named "myApp"
+// AngularJS Modeul and Controller Setup
 var app = angular.module('myApp', []);
 
-// Define a controller named "TableController"
 app.controller('TableController', ['$scope', function($scope) {
-  // Columns labeled A-H
+  // === Spreadsheet Setup ===
+
+  // Column labels A-H
   $scope.columns = ['A','B','C','D','E','F','G','H'];
   
-  // Rows labeled 1-20
-  // We'll just build an array of numbers [1..20]
+  // Row labels 1-20
   $scope.rows = [];
   for (let i = 1; i <= 20; i++) {
     $scope.rows.push(i);
   }
 
+  // Initialize cell data structure
   $scope.cells = [];
   for (let r = 0; r < 20; r++) {
     const rowArr = [];
@@ -30,6 +31,9 @@ app.controller('TableController', ['$scope', function($scope) {
     $scope.cells.push(rowArr)
   }
 
+  // === Cell Interaction Handlers ===
+
+  // Handles when a cell loses focus (user finishes editing)
   $scope.onCellBlur = function($event, rowIndex, colIndex) {
     const cell = $scope.cells[rowIndex][colIndex]
     const text = $event.target.innerText.trim();
@@ -42,7 +46,6 @@ app.controller('TableController', ['$scope', function($scope) {
       cell.references = extractReferences(cell.formula);
       evaluateFormula(cell, $scope.cells);
       $event.target.innerText = cell.displayValue;
-
     } else {
       cell.isCalculated = false;
       cell.formula = null;
@@ -54,6 +57,16 @@ app.controller('TableController', ['$scope', function($scope) {
     }
   }
 
+  // Handles cell focus: show formula if it's calculated
+  $scope.onCellFocus = function($event, rowIndex, colIndex) {
+    const cell = $scope.cells[rowIndex][colIndex];
+
+    if(cell.isCalculated) {
+      $event.target.innerText = '='+cell.formula;
+    }
+  }
+
+  // Handles arrow and Enter key navigation
   $scope.onCellKeyDown = function($event) {
     const key = $event.key;
 
@@ -70,38 +83,26 @@ app.controller('TableController', ['$scope', function($scope) {
 
     if (key === "Enter") {
       $event.preventDefault();
-      const nextRow = Math.min(rowIndex + 1, $scope.rows.length - 1);
-      const nextCoord = $scope.columns[colIndex] + (nextRow + 1);
-      const nextCell = document.querySelector(`[data-coord="${nextCoord}"]`);
-      if (nextCell) {
-        nextCell.focus();
-      }
-      return;
-    }
-
-    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
+      targetRow = Math.min(rowIndex + 1, $scope.rows.length - 1);
+    } else if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
       $event.preventDefault();
-   
       if (key === "ArrowUp") targetRow = Math.max(0, rowIndex - 1);
       if (key === "ArrowDown") targetRow = Math.min($scope.rows.length - 1, rowIndex + 1);
       if (key === "ArrowLeft") targetCol = Math.max(0, colIndex  - 1);
       if (key === "ArrowRight") targetCol = Math.min($scope.columns.length - 1, colIndex + 1);
+    } else {
+      return;
+    }
 
-      const nextCoord = $scope.columns[targetCol] + (targetRow + 1);
-      const nextCell = document.querySelector(`[data-coord="${nextCoord}"]`);
-      if (nextCell) {
-        nextCell.focus();
-      }
+    const nextCoord = $scope.columns[targetCol] + (targetRow + 1);
+    const nextCell = document.querySelector(`[data-coord="${nextCoord}"]`);
+    if (nextCell) {
+      nextCell.focus();
     }
   }
 
-  $scope.onCellFocus = function($event, rowIndex, colIndex) {
-    const cell = $scope.cells[rowIndex][colIndex];
 
-    if(cell.isCalculated) {
-      $event.target.innerText = '='+cell.formula;
-    }
-  }
+  // === Spreadsheet Reset ===
 
   $scope.resetSpreadsheet = function() {
     for (let r = 0; r < $scope.cells.length; r++) {
@@ -124,18 +125,22 @@ app.controller('TableController', ['$scope', function($scope) {
     }
   }
 
-  //helper functions
+  // === Helper functions ===
+
+  // Check if a string is numeric
   function checkIfNumeric(text) {
     const numericPattern=/^-?\d+(\.\d+)?$/;
     return numericPattern.test(text.trim());
   }
 
+  // Extract references like A1, B2 from formula
   function extractReferences(formulaString) {
     const regex = /[A-Z]\d+/g;
     const matches = formulaString.match(regex);
     return matches || []; 
   }
 
+  // Evaluate a formula (e.g. A1+B2)
   function evaluateFormula(cell, cells) {
     // e.g. "A1+B2"
     let expression = cell.formula;
@@ -158,6 +163,7 @@ app.controller('TableController', ['$scope', function($scope) {
     }
   }
 
+  // Convert "A1" to { r: 0, c: 0 }
   function coordToIndex(ref) {
     const match = ref.match(/^([A-Z]+)(\d+)$/);
     if(!match) {
