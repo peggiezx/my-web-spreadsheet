@@ -42,7 +42,7 @@ app.controller('TableController', ['$scope', function($scope) {
 
     if (text.startsWith('=')) {
       cell.isCalculated = true;
-      cell.formula = text.slice(1).trim();
+      cell.formula = text.slice(1).trim().toUpperCase();
       cell.references = extractReferences(cell.formula);
       evaluateFormula(cell, $scope.cells);
       $event.target.innerText = cell.displayValue;
@@ -62,7 +62,7 @@ app.controller('TableController', ['$scope', function($scope) {
     const cell = $scope.cells[rowIndex][colIndex];
 
     if(cell.isCalculated) {
-      $event.target.innerText = '='+cell.formula;
+      $event.target.innerText = '='+cell.formula.toUpperCase();
     }
   }
 
@@ -135,15 +135,15 @@ app.controller('TableController', ['$scope', function($scope) {
 
   // Extract references like A1, B2 from formula
   function extractReferences(formulaString) {
-    const regex = /[A-Z]\d+/g;
+    const regex = /[A-Za-z]\d+/g;
     const matches = formulaString.match(regex);
-    return matches || []; 
+    return (matches || []).map(ref => ref.toUpperCase()); 
   }
 
   // Evaluate a formula (e.g. A1+B2)
   function evaluateFormula(cell, cells) {
     // e.g. "A1+B2"
-    let expression = cell.formula;
+    let expression = cell.formula.toUpperCase();
 
     cell.references.forEach(ref => { 
       const {r, c} = coordToIndex(ref);
@@ -165,6 +165,7 @@ app.controller('TableController', ['$scope', function($scope) {
 
   // Convert "A1" to { r: 0, c: 0 }
   function coordToIndex(ref) {
+    ref = ref.toUpperCase();
     const match = ref.match(/^([A-Z]+)(\d+)$/);
     if(!match) {
       throw new Error(`Invalid coordinate string: "${coord}"`);
