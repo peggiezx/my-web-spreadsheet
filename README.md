@@ -32,5 +32,7 @@ my-web-spreadsheet/
 - Reset button (🔄) in top-left to clear all cells
 
 ----
-### Preview
+### Preview 
+<a href="https://peggiezx.github.io/my-web-spreadsheet/">Live Demo</a>
+
 ![screenshot](./assets/my-web-spreadsheet.png)
